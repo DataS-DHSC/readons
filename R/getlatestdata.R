@@ -33,7 +33,7 @@ get_latest_ons_data_url <- function(ons_url) {
   }
 
   # Tests if URL exists, if not stops
-  if(!url.exists(ons_url)) {
+  if(!url.exists(ons_url, useragent="curl/5.2 Rcurl/1.98")) {
     stop("Invalid URL")
   }
 
