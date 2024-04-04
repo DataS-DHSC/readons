@@ -31,7 +31,7 @@ get_html_text <- function(ons_url, element_info){
   }
 
   # URL validation test
-  if(!url.exists(ons_url)) {
+  if(!url.exists(ons_url, useragent="curl/5.2 Rcurl/1.98")) {
     stop("Invalid URL")
   }
 
@@ -62,7 +62,7 @@ get_html_text <- function(ons_url, element_info){
 #'
 #' get_dataset_title(ons_url)
 #'
-get_dataset_title <-function(ons_url){
+get_dataset_title <- function(ons_url){
   dataset_title <- get_html_text(ons_url,"h1.page-intro__title") %>%
     str_replace("Dataset ","")
   return(dataset_title)
@@ -122,10 +122,17 @@ get_next_updated <- function(ons_url) {
 #' get_about_this_dataset(ons_url)
 
 get_about_this_dataset <- function(ons_url){
-  about_this_dataset <- get_html_text(ons_url, "#main section:nth-child(1)") %>%
-    str_replace("(.*?)\n","")
+
+  about_this_dataset <- get_html_text(ons_url, "section") %>%
+    as_tibble() %>%
+    mutate(id = row_number()) %>%
+    filter(str_detect(value,"About this Dataset")) %>%
+    tidyr::separate(col = value,sep = "\n",into = c("title","about")) %>%
+    pull(about)
+
   return(about_this_dataset)
 }
+
 
 #' Retrieves a list of all available editions of the dataset
 #'
@@ -143,8 +150,13 @@ get_about_this_dataset <- function(ons_url){
 #' get_available_editions(ons_url)
 
 get_available_editions <- function(ons_url){
+
   available_editions <- get_html_text(ons_url, "h3") %>%
     str_subset("edition")
+
+  if(length(available_editions) == 0){
+    available_editions <- "1 or fewer releases detected"}
+
   return(available_editions)
 }
 
@@ -164,8 +176,10 @@ get_available_editions <- function(ons_url){
 #' get_latest_edition(ons_url)
 
 get_latest_edition <- function(ons_url){
+
   latest_edition <- get_available_editions(ons_url) %>%
     first()
+
   return(latest_edition)
 }
 
@@ -182,7 +196,7 @@ get_latest_edition <- function(ons_url){
 #' "healthandsocialcare/conditionsanddiseases/datasets/coronaviruscovid19",
 #' "infectionsurveydata", sep="")
 #'
-#' get_metadata(ons_url)
+#' get_metadata(ons_url2)
 
 get_metadata <- function(ons_url){
 
