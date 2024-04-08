@@ -112,6 +112,13 @@ get_next_updated <- function(ons_url) {
 #'
 #' @return about_this dataset Additional information provided by ONS about this dataset.
 #' @importFrom stringr str_replace
+#' @importFrom stringr str_detect
+#' @importFrom dplyr as_tibble
+#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
+#' @importFrom dplyr pull
+#' @importFrom dplyr row_number
+#' @importFrom tidyr separate
 #' @export
 #'
 #' @examples
@@ -127,7 +134,9 @@ get_about_this_dataset <- function(ons_url){
     as_tibble() %>%
     mutate(id = row_number()) %>%
     filter(str_detect(value,"About this Dataset")) %>%
-    tidyr::separate(col = value,sep = "\n",into = c("title","about")) %>%
+    separate(col = value,
+             sep = "\n",
+             into = c("title","about")) %>%
     pull(about)
 
   return(about_this_dataset)
@@ -196,7 +205,7 @@ get_latest_edition <- function(ons_url){
 #' "healthandsocialcare/conditionsanddiseases/datasets/coronaviruscovid19",
 #' "infectionsurveydata", sep="")
 #'
-#' get_metadata(ons_url2)
+#' get_metadata(ons_url)
 
 get_metadata <- function(ons_url){
 

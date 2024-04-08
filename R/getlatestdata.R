@@ -2,14 +2,8 @@
 # Checks URL is valid, then searches the ons_url for any xlsx links, turns relative links to absolute,
 # then filters to the first (assuming most recent) link
 
-library(dplyr)
-library(rvest)
-library(RCurl)
-library(stringr)
-library(xml2)
 
-
-#' Finds the first (assuming most recent) data (xlsx) URL on an ONS webpage
+#' Finds the first (assuming most recent) data (ods/xls/csv/xlsx) URL on an ONS webpage
 #'
 #' @param ons_url The URL for the ONS webpage which contains embedded dataset link/s.
 #'
@@ -74,6 +68,7 @@ get_latest_ons_data_url <- function(ons_url) {
 #' @return The destination file path folder
 #' @importFrom RCurl url.exists
 #' @importFrom utils download.file
+#' @importFrom stringr str_locate_all
 #' @export
 #'
 #' @examples
@@ -84,13 +79,15 @@ get_latest_ons_data_url <- function(ons_url) {
 #'
 #' destfilepath <- "data"
 #'
-#' download_latest_ons_data(ons_url2, "data")
+#' download_latest_ons_data(ons_url, "data")
 #'
 download_latest_ons_data <- function(ons_url, destfilepath) {
 
   data_url <- get_latest_ons_data_url(ons_url)
 
-  ons_file_name <- substr(data_url, max(str_locate_all(data_url,"\\/")[[1]]), nchar(data_url))
+  ons_file_name <- substr(data_url,
+                          max(str_locate_all(data_url,"\\/")[[1]]),
+                          nchar(data_url))
 
   destfilepathwithext <- paste0(destfilepath, ons_file_name)
 

@@ -27,7 +27,7 @@ ons_url <- paste("https://www.ons.gov.uk/peoplepopulationandcommunity/",
 "infectionsurveydata", sep="")
 
 
-destfilepath <- "data/cisdata.xlsx"
+destfilepath <- "data"
 
 download_latest_ons_data(ons_url, destfilepath)
 
