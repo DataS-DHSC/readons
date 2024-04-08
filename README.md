@@ -48,7 +48,7 @@ ons_url <- "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialc
 
 # Assign the destination you would like to save the downloaded data into as destfilepath (note that any new folder directories will be created if they do not already exist)
 
-destfilepath <- "data/cisdata.xlsx"
+destfilepath <- "data"
 
 # Download data to user specified destination
 

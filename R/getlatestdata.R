@@ -79,7 +79,7 @@ get_latest_ons_data_url <- function(ons_url) {
 #'
 #' destfilepath <- "data"
 #'
-#' download_latest_ons_data(ons_url, "data")
+#' download_latest_ons_data(ons_url, destfilepath)
 #'
 download_latest_ons_data <- function(ons_url, destfilepath) {
 
