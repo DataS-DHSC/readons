@@ -65,7 +65,7 @@ test_that("destfile directory is created if did not previously exist", {
     "healthandsocialcare/conditionsanddiseases/datasets/coronaviruscovid19",
     "infectionsurveydata")
 
-  destfilepath <- "data/cisdata.xlsx"
+  destfilepath <- "data"
 
   Sys.sleep(1)
 
@@ -82,7 +82,7 @@ test_that("valid URL input results in file downloaded to newly created destfile 
     "healthandsocialcare/conditionsanddiseases/datasets/coronaviruscovid19",
     "infectionsurveydata")
 
-  destfilepath <- "data/cisdata.xlsx"
+  destfilepath <- "data"
 
   Sys.sleep(1)
 

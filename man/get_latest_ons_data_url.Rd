@@ -2,7 +2,7 @@
 % Please edit documentation in R/getlatestdata.R
 \name{get_latest_ons_data_url}
 \alias{get_latest_ons_data_url}
-\title{Finds the first (assuming most recent) data (xlsx) URL on an ONS webpage}
+\title{Finds the first (assuming most recent) data (ods/xls/csv/xlsx) URL on an ONS webpage}
 \usage{
 get_latest_ons_data_url(ons_url)
 }
@@ -13,7 +13,7 @@ get_latest_ons_data_url(ons_url)
 data_url - the first, assuming most recent, data URL on the webpage
 }
 \description{
-Finds the first (assuming most recent) data (xlsx) URL on an ONS webpage
+Finds the first (assuming most recent) data (ods/xls/csv/xlsx) URL on an ONS webpage
 }
 \examples{
 ons_url <- paste("https://www.ons.gov.uk/peoplepopulationandcommunity/",

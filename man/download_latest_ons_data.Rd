@@ -14,7 +14,7 @@ download_latest_ons_data(ons_url, destfilepath)
 \item{destfilepath}{The destination location where you want to save the file.}
 }
 \value{
-The destination file path
+The destination file path folder
 }
 \description{
 Downloads first (assuming most recent) dataset link embedded on ONS webpage
@@ -27,8 +27,8 @@ ons_url <- paste("https://www.ons.gov.uk/peoplepopulationandcommunity/",
 "infectionsurveydata", sep="")
 
 
-destfilepath <- "data/cisdata.xlsx"
+destfilepath <- "data"
 
-download_latest_ons_data(ons_url, destfilepath)
+download_latest_ons_data(ons_url, "data")
 
 }

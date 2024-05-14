@@ -2,7 +2,8 @@
 # Checks URL is valid, then searches the ons_url for any xlsx links, turns relative links to absolute,
 # then filters to the first (assuming most recent) link
 
-#' Finds the first (assuming most recent) data (xlsx) URL on an ONS webpage
+
+#' Finds the first (assuming most recent) data (ods/xls/csv/xlsx) URL on an ONS webpage
 #'
 #' @param ons_url The URL for the ONS webpage which contains embedded dataset link/s.
 #'
@@ -33,7 +34,7 @@ get_latest_ons_data_url <- function(ons_url) {
   }
 
   # Tests if URL exists, if not stops
-  if(!url.exists(ons_url)) {
+  if(!url.exists(ons_url, useragent="curl/5.2 Rcurl/1.98")) {
     stop("Invalid URL")
   }
 
@@ -64,9 +65,10 @@ get_latest_ons_data_url <- function(ons_url) {
 #' @param ons_url The URL for the ONS webpage which contains embedded dataset link/s.
 #' @param destfilepath The destination location where you want to save the file.
 #'
-#' @return The destination file path
+#' @return The destination file path folder
 #' @importFrom RCurl url.exists
 #' @importFrom utils download.file
+#' @importFrom stringr str_locate_all
 #' @export
 #'
 #' @examples
@@ -75,22 +77,30 @@ get_latest_ons_data_url <- function(ons_url) {
 #' "infectionsurveydata", sep="")
 #'
 #'
-#' destfilepath <- "data/cisdata.xlsx"
+#' destfilepath <- "data"
 #'
 #' download_latest_ons_data(ons_url, destfilepath)
 #'
 download_latest_ons_data <- function(ons_url, destfilepath) {
 
+  data_url <- get_latest_ons_data_url(ons_url)
+
+  ons_file_name <- substr(data_url,
+                          max(str_locate_all(data_url,"\\/")[[1]]),
+                          nchar(data_url))
+
+  destfilepathwithext <- paste0(destfilepath, ons_file_name)
+
   #checks if destfile directory exists and if not creates it
-  absolute_directory <- normalizePath(dirname(destfilepath), mustWork = FALSE)
+  absolute_directory <- normalizePath(dirname(destfilepathwithext), mustWork = FALSE)
+
 
   if(!dir.exists(absolute_directory)) {
     dir.create(absolute_directory)
     print(paste0("Directory did not exist and has been created: ", absolute_directory))
   }
 
-  data_url <- get_latest_ons_data_url(ons_url)
-  download.file(data_url, destfilepath, mode="wb")
+
+  download.file(data_url, destfilepathwithext, mode="wb")
   return(normalizePath(destfilepath))
 }
-
