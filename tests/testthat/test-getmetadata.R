@@ -24,8 +24,6 @@ test_that("valid url generates right output", {
 
   element_info <- "h1.page-intro__title"
 
-  Sys.sleep(4)
-
   df <- get_html_text(ons_url, element_info)
 
   Sys.sleep(4)
@@ -39,8 +37,6 @@ test_that("valid url generates right output", {
   Sys.sleep(4)
 
   df4 <- get_html_text(ons_url4, element_info)
-
-  Sys.sleep(4)
 
   result <- "Dataset Coronavirus (COVID-19) Infection Survey: England"
   result2 <- "Dataset Unit labour cost and unit wage cost time series"
