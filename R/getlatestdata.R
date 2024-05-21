@@ -2,7 +2,68 @@
 # Checks URL is valid, then searches the ons_url for any xlsx links, turns relative links to absolute,
 # then filters to the first (assuming most recent) link
 
+#' Extracts available data file extensions (ods/xls/csv/xlsx/csdb) on an ONS webpage
+#'
+#' @param ons_url The URL for the ONS webpage which contains embedded dataset link/s.
+#'
+#' @return file_extensions - unique available data file extensions
+#'
+#' @importFrom RCurl url.exists
+#' @importFrom rvest read_html
+#' @importFrom rvest html_element
+#' @importFrom rvest html_attr
+#' @importFrom stringr str_subset
+#' @importFrom stringr str_extract
+#' @importFrom xml2 url_absolute
+#'
+#' @export
+#'
+#' @examples
+#' ons_url <- paste("https://www.ons.gov.uk/peoplepopulationandcommunity/",
+#' "healthandsocialcare/conditionsanddiseases/datasets/coronaviruscovid19",
+#' "infectionsurveydata", sep="")
+#'
+#' extract_file_extensions(ons_url)
+#'
+extract_file_extensions <- function(ons_url) {
 
+  # Tests it is a character string, if not stops
+  if(!is.character(ons_url)) {
+    stop("Invalid input")
+  }
+
+  # Tests if URL exists, if not stops
+  if(!url.exists(ons_url, useragent="curl/5.2 Rcurl/1.98")) {
+    stop("Invalid URL")
+  }
+
+  data_urls <- read_html(ons_url) %>%
+    html_elements("a") %>%
+    html_attr("href") %>%
+    str_subset("\\.ods$|\\.xls$|\\.csv$|\\.xlsx$|\\.csdb$") %>%
+    url_absolute(ons_url)
+
+  # test that data links are available, if not stops
+  if(length(data_urls) == 0) {
+    stop("No data links available")
+  }
+
+  # Use str_extract to capture the substring after the last "."
+  file_extensions <- str_extract(data_urls, "\\.\\w+$")
+
+  # Remove the leading "." from the extracted substring
+  file_extensions <- sub("^\\.", "", file_extensions)
+
+  # filter to unique file extension type
+  # TO FIX - need to find a way to filter to most recent data file types - see https://www.ons.gov.uk/peoplepopulationandcommunity/birthsdeathsandmarriages/deaths/datasets/childmortalitystatisticschildhoodinfantandperinatalchildhoodinfantandperinatalmortalityinenglandandwales
+  file_extensions <- unique(file_extensions)
+
+  return(file_extensions)
+
+}
+
+
+# TO FIX - need to enable user to specify the file extension they want to download
 #' Finds the first (assuming most recent) data (ods/xls/csv/xlsx) URL on an ONS webpage
 #'
 #' @param ons_url The URL for the ONS webpage which contains embedded dataset link/s.
@@ -41,7 +102,7 @@ get_latest_ons_data_url <- function(ons_url) {
   data_urls <- read_html(ons_url) %>%
     html_elements("a") %>%
     html_attr("href") %>%
-    str_subset("\\.ods$|\\.xls$|\\.csv$|\\.xlsx$") %>%
+    str_subset("\\.ods$|\\.xls$|\\.csv$|\\.xlsx$|\\.csdb$") %>%
     url_absolute(ons_url)
 
   # test that data links are available, if not stops
